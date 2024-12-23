@@ -1,0 +1,109 @@
+{% load custom_tags %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+    <title>Supplier Quotation Request</title>
+    <style>
+        body {
+            font-family: 'Times New Roman';
+           
+        }
+    </style>
+</head>
+<body class="font-times text-base m-12">
+
+    <div class="relative">
+        <div class="img">
+            {% load static %}
+            <img src="{% static 'images/header1.jpg' %}" alt="Description of the image" class="w-full h-44 rounded-lg" />
+        </div>
+        <hr class="border border-black">
+        <div class="float-left">
+            <p id="javakNoDisplay" class="font-bold mt-2 p-2 ml-4">जावक क्र./No. :</p>
+        </div>
+        <div class="float-right">
+            <p id="dateDisplay" class="font-bold float-right m-4 pr-20 mr-12">दिनांक/Date:</p>
+        </div>
+        <br><br><br>
+        <div class="text-1xl text-left ml-4 p-4">
+            <div class="w-44">
+            <p>
+                
+                To, <br />
+                {{ amc_provider.name }} <br />
+                <p class="w-48">{{ amc_provider.address }}<br /></p>
+                {{ amc_provider.state }}- {{ amc_provider.pincode }}.<br>
+                Email: {{amc_provider.email_id}}<br>
+            </p>
+        </div>
+            <div>
+                <div class="flex justify-center p-4 ">
+                    <p>
+                        <b>Sub:- Quotation for supply of 
+                            {% for subproduct in related_subproducts|unique:'type_of_part' %}
+                                {{ subproduct.type_of_part }},
+                            {% endfor %}
+                        required for the following forensic instruments: 
+                        {% for product in products %}
+                            <b>{{ product.main_item.name }}</b>
+                        {% endfor %}<br />
+
+                        <b>Ref:-</b> Your Service report dated 
+                        {% for product in products %}
+                            {{ service_report_dates|get_item:product.id|default:None }},
+                        {% endfor %}.
+                    </p>
+                </b>
+                </div>
+                <div class="w-[600] text-justify">
+                    &nbsp; &nbsp; &nbsp; It is requested to submit your lowest quotation immediately to the Mumbai office for the supply and successful installation of the following spares/consumables required for 
+                    {% for product in products %}
+                        <b>Instrument Sr.no {{ product_serial_numbers|get_item:product.id }}</b>
+                    {% endfor %}
+                    located at  
+                    {% if letter.lab_name.name == "Mumbai" %}
+                        Directorate of Forensic Science Laboratories, Mumbai
+                    {% else %}
+                        Regional Forensic Science Laboratory, {{ letter.lab_name }}
+                    {% endif %}.
+                </div>
+            </div>
+            <div class="flex justify-center text-sm p-6">
+                <table class="" style="page-break-inside: avoid; border: 1px solid black;">
+                    <thead>
+                        <tr>
+                            <th class="border border-black px-2 py-2">Sr.No</th>
+                            <th class="border border-black px-2 py-2 text-center">Description</th>
+                            <th class="border border-black px-2 py-2">Type of Part</th>
+                            <th class="border border-black px-2 py-2">Req Qty</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for subproduct in related_subproducts %}
+                        <tr>
+                            <td class="border border-black px-4 py-2 text-left">{{ forloop.counter }}</td>
+                            <td class="border border-black px-4 py-2 text-left">{{ subproduct.part_name }} Specification {{ subproduct.specification }}</td>
+                            <td class="border border-black px-4 py-2">{{ subproduct.type_of_part }}</td>
+                            <td class="border border-black px-4 py-2">{{ subproduct.quantity }} {{subproduct.unit_of_measure}}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <p class="mt-[3]">Thanking You</p><br>
+            <br><br><br><br><br>
+        </div><br>
+        <div class="ml-12 mt-8 bottom-0 right-0 absolute">
+            <p class="text-center">Yours, <br></p><br><br>
+            <p class="text-center">(Dr. S.V. Ghumatkar) <br>Director.</p>
+            <p>Directorate of Forensic Science Laboratories,</p>
+            <p>M.S..and Chemical Analyser to Government.</p>
+        </div>
+    </div>
+    
+</body>
+</html>
